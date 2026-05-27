@@ -1,0 +1,40 @@
+name: Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Source Code
+      uses: actions/checkout@v4
+
+    - name: Setup Rust Toolchain
+      uses: dtolnay/rust-toolchain@stable
+
+    - name: Configure Rust Dependency Cache
+      uses: Swatinem/rust-cache@v2
+
+    - name: Validate Markdown & Schema Integrity
+      run: cargo run --release -- check
+
+    - name: Compile Static Site Production Artifacts
+      run: cargo run --release -- build --output public --minify --gzip
+
+    - name: Generate RSS Syndication Feed
+      run: cargo run --release -- rss --output public/feed.xml
+
+    - name: Deploy to Cloudflare Pages
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      uses: cloudflare/pages-action@v1
+      with:
+        apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        projectName: "rust-blog"
+        directory: "public"
+        gitHubToken: ${{ secrets.GITHUB_TOKEN }}

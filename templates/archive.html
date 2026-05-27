@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Archive - {{ config.title | default(value="Rust Blog") }}{% endblock title %}
+
+{% block content %}
+<style>
+    .archive-title {
+        margin-bottom: 2rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--primary-color);
+        display: inline-block;
+    }
+
+    .archive-timeline {
+        position: relative;
+        padding-left: 1.5rem;
+        border-left: 2px solid #e5e7eb;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .archive-item {
+        display: flex;
+        align-items: baseline;
+        gap: 1.5rem;
+        position: relative;
+    }
+
+    .archive-item::before {
+        content: '';
+        position: absolute;
+        left: calc(-1.5rem - 5px);
+        top: 0.6rem;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+    }
+
+    .archive-date {
+        font-family: monospace;
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        white-space: nowrap;
+    }
+
+    .archive-link {
+        color: #111827;
+        font-weight: 500;
+        font-size: 1.1rem;
+    }
+
+    .archive-link:hover {
+        color: var(--primary-color);
+    }
+</style>
+
+<h1 class="archive-title">🗂️ Article Archive</h1>
+
+{% if posts %}
+<div class="archive-timeline">
+    {% for post in posts %}
+    <div class="archive-item">
+        <span class="archive-date">{{ post.date }}</span>
+        <a href="/posts/{{ post.slug }}.html" class="archive-link">
+            {{ post.title }}
+            {% if post.draft %}<span style="color: #e53e3e; font-size: 0.85rem; font-weight: bold;"> (Draft)</span>{%
+            endif %}
+        </a>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p>No compiled posts found in the workspace archive vector.</p>
+{% endif %}
+{% endblock content %}

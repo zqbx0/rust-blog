@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.meta.title }} - {{ config.title | default(value="Rust Blog") }}{% endblock title %}
+
+{% block content %}
+<style>
+    .post-content {
+        margin: 2rem 0;
+        font-size: 1.1rem;
+        line-height: 1.8;
+    }
+
+    /* Style adjustments for high-speed syntax highlighting blocks */
+    .post-content pre {
+        background-color: #1e1e2e;
+        padding: 1.25rem;
+        border-radius: var(--radius-md);
+        overflow-x: auto;
+        margin: 1.5rem 0;
+        border: 1px solid #313244;
+    }
+
+    .post-tags {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-top: 3rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .tag {
+        background-color: #e0e7ff;
+        color: #4338ca;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: var(--transition);
+    }
+
+    .tag:hover {
+        background-color: #c7d2fe;
+        cursor: pointer;
+    }
+</style>
+
+<article>
+    <h1>{{ post.meta.title }}</h1>
+
+    <div class="post-meta">
+        📅 {{ post.meta.date }}
+        {% if post.meta.draft %}
+        <span style="color: #e53e3e; font-weight: bold;">| 📝 Draft</span>
+        {% endif %}
+    </div>
+
+    <div class="post-content">
+        {{ post.html_content | safe }}
+    </div>
+
+    {% if post.meta.tags %}
+    <div class="post-tags">
+        {% for tag in post.meta.tags %}
+        <span class="tag">#{{ tag }}</span>
+        {% endfor %}
+    </div>
+    {% endif %}
+</article>
+{% endblock content %}

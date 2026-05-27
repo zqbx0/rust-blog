@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Home - {{ config.title | default(value="Rust Blog") }}{% endblock title %}
+
+{% block content %}
+<h1>📚 Latest Snippets</h1>
+
+{% if posts %}
+<ul class="post-list">
+    {% for post in posts %}
+    <li class="post-item">
+        <h2 class="post-title">
+            <a href="/posts/{{ post.meta.slug }}.html">{{ post.meta.title }}</a>
+        </h2>
+
+        <div class="post-meta">
+            📅 {{ post.meta.date }}
+            {% if post.meta.draft %}
+            <span style="color: #e53e3e; margin-left: 0.5rem; font-weight: bold;">| 📝 Draft</span>
+            {% endif %}
+        </div>
+
+        {% if post.meta.summary %}
+        <p class="post-excerpt">{{ post.meta.summary }}</p>
+        {% else %}
+        <p class="post-excerpt">No abstract description available for this post matrix.</p>
+        {% endif %}
+
+        <a href="/posts/{{ post.meta.slug }}.html" class="read-more">Read More →</a>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No distribution targets compiled yet. Create a new markdown entry to get started.</p>
+{% endif %}
+{% endblock content %}
